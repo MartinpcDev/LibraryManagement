@@ -24,8 +24,13 @@ public class Author {
 
   @Column(nullable = false)
   private String name;
-  
+
+  @Column(nullable = false)
   private String lastname;
+
+  @Column(nullable = false)
   private Date birthdate;
+
+  @Column(nullable = false)
   private String nationality;
 }

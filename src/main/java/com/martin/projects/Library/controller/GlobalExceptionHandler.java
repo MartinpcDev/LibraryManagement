@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
         httpStatus,
         request.getMethod(),
-        duplicatedNameEditorialException.getMessage(),
+        "Error en la request: Nombre duplicado",
         duplicatedNameEditorialException.getMessage(),
         timestamp,
         null

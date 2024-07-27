@@ -13,9 +13,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
   List<Book> findAllByEditorialName(String editorialName);
 
-  List<Book> findAllByGenderContainingIgnoreCase(BookGender gender);
+  List<Book> findByGender(BookGender gender);
 
   List<Book> findAllByPublicationYear(Integer publicationYear);
 
   Book findByIsbn(String isbn);
+
+  boolean existsByIsbn(String isbn);
 }

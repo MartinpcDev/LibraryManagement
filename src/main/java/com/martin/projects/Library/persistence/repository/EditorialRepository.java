@@ -8,5 +8,7 @@ public interface EditorialRepository extends JpaRepository<Editorial, Long> {
 
   List<Editorial> findAllByNameContainingIgnoreCase(String name);
 
+  boolean existsByName(String name);
+
   List<Editorial> findAllByCountryContainingIgnoreCase(String country);
 }

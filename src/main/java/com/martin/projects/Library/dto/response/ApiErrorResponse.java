@@ -21,6 +21,9 @@ public class ApiErrorResponse {
   private String httpMethod;
 
   private String message;
+
+  @JsonProperty("backend_message")
+  private String backendMessage;
   private LocalDateTime timestamp;
   private List<String> details;
 }

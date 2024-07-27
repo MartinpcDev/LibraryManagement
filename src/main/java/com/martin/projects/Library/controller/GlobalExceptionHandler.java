@@ -1,6 +1,7 @@
 package com.martin.projects.Library.controller;
 
 import com.martin.projects.Library.dto.response.ApiErrorResponse;
+import com.martin.projects.Library.exception.DuplicatedNameEditorialException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -34,6 +35,42 @@ public class GlobalExceptionHandler {
         httpStatus,
         request.getMethod(),
         notFoundElementException.getMessage(),
+        notFoundElementException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(DuplicatedNameEditorialException.class)
+  public ResponseEntity<ApiErrorResponse> handleEditorialNameExistsException(
+      DuplicatedNameEditorialException duplicatedNameEditorialException,
+      HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.CONFLICT.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        duplicatedNameEditorialException.getMessage(),
+        duplicatedNameEditorialException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(
+      IllegalArgumentException illegalArgumentException, HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.BAD_REQUEST.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        illegalArgumentException.getMessage(),
+        illegalArgumentException.getMessage(),
         timestamp,
         null
     );
@@ -51,6 +88,7 @@ public class GlobalExceptionHandler {
         request.getMethod(),
         "Error en la lectura del HTTP body, Compruebe que el formato es correcto y/o contenga "
             + "data valida.",
+        httpMessageNotReadableException.getMessage(),
         timestamp,
         null
     );
@@ -70,6 +108,7 @@ public class GlobalExceptionHandler {
         "Media Type no soportados, los Media Type soportados son: "
             + httpMediaTypeNotSupportedException.getSupportedMediaTypes()
             + " y tu enviaste: " + httpMediaTypeNotSupportedException.getContentType(),
+        httpMediaTypeNotSupportedException.getMessage(),
         timestamp,
         null
     );
@@ -87,6 +126,7 @@ public class GlobalExceptionHandler {
         httpStatus,
         request.getMethod(),
         "metodo HTTP no permitado, Revisa el metodo HTTP de la request.",
+        httpRequestMethodNotSupportedException.getMessage(),
         timestamp,
         null
     );
@@ -112,6 +152,7 @@ public class GlobalExceptionHandler {
         httpStatus,
         request.getMethod(),
         "La request tiene parametros invalidos o incompletos.",
+        methodArgumentNotValidException.getMessage(),
         timestamp,
         details
     );
@@ -133,6 +174,7 @@ public class GlobalExceptionHandler {
         request.getMethod(),
         "Request Invalido: el valor proporcionado " + valueRejected
             + " no tiene el type esperado " + "para el " + propertyName,
+        methodArgumentTypeMismatchException.getMessage(),
         timestamp,
         null
     );
@@ -148,7 +190,8 @@ public class GlobalExceptionHandler {
     ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
         httpStatus,
         request.getMethod(),
-        "Ocurrio un error inesperado: " + exception.getMessage(),
+        "Ocurrio un error inesperado.",
+        exception.getMessage(),
         timestamp,
         null
     );

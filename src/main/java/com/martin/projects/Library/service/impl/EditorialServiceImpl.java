@@ -2,7 +2,7 @@ package com.martin.projects.Library.service.impl;
 
 import com.martin.projects.Library.dto.request.SaveEditorial;
 import com.martin.projects.Library.dto.response.EditorialDto;
-import com.martin.projects.Library.exception.DuplicatedNameEditorialException;
+import com.martin.projects.Library.exception.DuplicatedNameException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.mapper.EditorialMapper;
 import com.martin.projects.Library.persistence.entity.Editorial;
@@ -58,7 +58,7 @@ public class EditorialServiceImpl implements EditorialService {
     boolean editorialNameExists = editorialRepository.existsByName(editorialDto.getName());
 
     if (editorialNameExists) {
-      throw new DuplicatedNameEditorialException("El nombre de la Editorial ya existe");
+      throw new DuplicatedNameException("El nombre de la Editorial ya existe");
     }
 
     Editorial editorialEntity = EditorialMapper.toEditorialEntity(editorialDto);
@@ -74,7 +74,7 @@ public class EditorialServiceImpl implements EditorialService {
 
     if (!editorialExists.getName().equals(editorialDto.getName())
         && editorialRepository.existsByName(editorialDto.getName())) {
-      throw new DuplicatedNameEditorialException("El name de la Editorial ya existe");
+      throw new DuplicatedNameException("El name de la Editorial ya existe");
     }
 
     EditorialMapper.updateEditorialEntity(editorialExists, editorialDto);

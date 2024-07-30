@@ -4,10 +4,11 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 
-public class GenderValidator implements ConstraintValidator<ValidGender, String> {
+public class StatusValidator implements ConstraintValidator<ValidStatus, String> {
 
   @Override
-  public void initialize(ValidGender constraintAnnotation) {
+  public void initialize(ValidStatus constraintAnnotation) {
+
   }
 
   @Override
@@ -15,7 +16,8 @@ public class GenderValidator implements ConstraintValidator<ValidGender, String>
     if (value == null) {
       return false;
     }
-    return Arrays.stream(BookGender.values())
-        .anyMatch(gender -> gender.name().equalsIgnoreCase(value));
+
+    return Arrays.stream(PrestamoStatus.values())
+        .anyMatch(status -> status.name().equalsIgnoreCase(value));
   }
 }

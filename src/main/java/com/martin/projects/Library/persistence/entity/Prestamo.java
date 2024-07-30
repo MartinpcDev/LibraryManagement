@@ -28,7 +28,7 @@ public class Prestamo {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private PrestamoStatus status;
+  private PrestamoStatus status = PrestamoStatus.EN_PRESTAMO;
 
   @Column(nullable = false)
   private Date startDate;

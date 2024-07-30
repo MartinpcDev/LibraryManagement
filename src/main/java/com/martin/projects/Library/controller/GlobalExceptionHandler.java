@@ -1,7 +1,7 @@
 package com.martin.projects.Library.controller;
 
 import com.martin.projects.Library.dto.response.ApiErrorResponse;
-import com.martin.projects.Library.exception.DuplicatedNameEditorialException;
+import com.martin.projects.Library.exception.DuplicatedNameException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -43,9 +43,9 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(httpStatus).body(apiErrorResponse);
   }
 
-  @ExceptionHandler(DuplicatedNameEditorialException.class)
+  @ExceptionHandler(DuplicatedNameException.class)
   public ResponseEntity<ApiErrorResponse> handleEditorialNameExistsException(
-      DuplicatedNameEditorialException duplicatedNameEditorialException,
+      DuplicatedNameException duplicatedNameException,
       HttpServletRequest request) {
 
     int httpStatus = HttpStatus.CONFLICT.value();
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         httpStatus,
         request.getMethod(),
         "Error en la request: Nombre duplicado",
-        duplicatedNameEditorialException.getMessage(),
+        duplicatedNameException.getMessage(),
         timestamp,
         null
     );

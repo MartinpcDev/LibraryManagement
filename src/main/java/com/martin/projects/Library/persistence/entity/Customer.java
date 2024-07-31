@@ -1,14 +1,10 @@
 package com.martin.projects.Library.persistence.entity;
 
-import com.martin.projects.Library.util.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +17,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "\"user\"")
-public class User {
+public class Customer {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +26,10 @@ public class User {
   private String fullName;
 
   @Column(nullable = false, unique = true)
-  private String username;
+  private String phone;
 
-  @Column(nullable = false)
-  private String password;
-
-  @Enumerated(EnumType.STRING)
-  private UserRole role = UserRole.EMPLOYEE;
+  @Column(nullable = false, unique = true)
+  private String email;
 
   @CreationTimestamp
   @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")

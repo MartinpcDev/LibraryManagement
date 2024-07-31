@@ -4,8 +4,8 @@ import com.martin.projects.Library.dto.request.SavePrestamo;
 import com.martin.projects.Library.dto.request.UpdatePrestamo;
 import com.martin.projects.Library.dto.response.PrestamoDto;
 import com.martin.projects.Library.persistence.entity.Book;
+import com.martin.projects.Library.persistence.entity.Customer;
 import com.martin.projects.Library.persistence.entity.Prestamo;
-import com.martin.projects.Library.persistence.entity.User;
 import com.martin.projects.Library.util.PrestamoStatus;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PrestamoMapper {
         prestamo.getStartDate(),
         prestamo.getEndDate(),
         BookMapper.toBookDto(prestamo.getBook()),
-        UserMapper.toUserDto(prestamo.getUser())
+        CustomerMapper.toCustomerDto(prestamo.getCustomer())
     );
   }
 
@@ -36,7 +36,8 @@ public class PrestamoMapper {
         .toList();
   }
 
-  public static Prestamo toSavePrestamoEntity(SavePrestamo prestamoDto, Book book, User user) {
+  public static Prestamo toSavePrestamoEntity(SavePrestamo prestamoDto, Book book,
+      Customer customer) {
     if (prestamoDto == null) {
       return null;
     }
@@ -45,12 +46,13 @@ public class PrestamoMapper {
     prestamo.setStartDate(prestamoDto.getStartDate());
     prestamo.setEndDate(prestamoDto.getEndDate());
     prestamo.setBook(book);
-    prestamo.setUser(user);
+    prestamo.setCustomer(customer);
 
     return prestamo;
   }
 
-  public static Prestamo toUpdatePrestamoEntity(UpdatePrestamo prestamoDto, Book book, User user) {
+  public static Prestamo toUpdatePrestamoEntity(UpdatePrestamo prestamoDto, Book book,
+      Customer customer) {
     if (prestamoDto == null) {
       return null;
     }
@@ -60,14 +62,14 @@ public class PrestamoMapper {
     prestamo.setEndDate(prestamoDto.getEndDate());
     prestamo.setStatus(PrestamoStatus.valueOf(prestamoDto.getStatus()));
     prestamo.setBook(book);
-    prestamo.setUser(user);
+    prestamo.setCustomer(customer);
 
     return prestamo;
   }
 
   public static void updatePrestamoEntity(Prestamo oldPrestamo, UpdatePrestamo prestamoDto,
-      Book book, User user) {
-    if (oldPrestamo == null || prestamoDto == null || book == null || user == null) {
+      Book book, Customer customer) {
+    if (oldPrestamo == null || prestamoDto == null || book == null || customer == null) {
       return;
     }
 
@@ -75,6 +77,6 @@ public class PrestamoMapper {
     oldPrestamo.setEndDate(prestamoDto.getEndDate());
     oldPrestamo.setStatus(PrestamoStatus.valueOf(prestamoDto.getStatus().toUpperCase()));
     oldPrestamo.setBook(book);
-    oldPrestamo.setUser(user);
+    oldPrestamo.setCustomer(customer);
   }
 }

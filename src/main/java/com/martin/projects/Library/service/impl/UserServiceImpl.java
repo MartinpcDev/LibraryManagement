@@ -1,6 +1,7 @@
 package com.martin.projects.Library.service.impl;
 
 import com.martin.projects.Library.dto.request.SaveUser;
+import com.martin.projects.Library.dto.request.UpdateUser;
 import com.martin.projects.Library.dto.response.UserDto;
 import com.martin.projects.Library.exception.DuplicatedNameException;
 import com.martin.projects.Library.exception.NotFoundElementException;
@@ -8,6 +9,7 @@ import com.martin.projects.Library.mapper.UserMapper;
 import com.martin.projects.Library.persistence.entity.User;
 import com.martin.projects.Library.persistence.repository.UserRepository;
 import com.martin.projects.Library.service.UserService;
+import com.martin.projects.Library.util.UserRole;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,30 +35,24 @@ public class UserServiceImpl implements UserService {
 
   @Transactional(readOnly = true)
   @Override
-  public List<UserDto> findAllUsersByName(String name) {
-    return UserMapper.toUserDtoList(userRepository.findAllByFullNameContainingIgnoreCase(name));
+  public List<UserDto> findAllByRole(UserRole role) {
+    return UserMapper.toUserDtoList(userRepository.findAllByRole(role));
   }
 
   @Transactional(readOnly = true)
   @Override
   public UserDto findUserById(Long id) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new NotFoundElementException("El id no pertenece a ningun Usuario"));
+        .orElseThrow(() -> new NotFoundElementException("El id no pertenece a ningun usuario"));
     return UserMapper.toUserDto(user);
   }
 
   @Override
   public UserDto createUser(SaveUser userDto) {
-    boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
-    boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
-    boolean phoneExists = userRepository.existsByPhone(userDto.getPhone());
+    boolean usernameExists = userRepository.existsUserByUsername(userDto.getUsername());
 
     if (usernameExists) {
-      throw new DuplicatedNameException("el username ya esta en uso");
-    } else if (emailExists) {
-      throw new DuplicatedNameException("el email ya esta en uso");
-    } else if (phoneExists) {
-      throw new DuplicatedNameException("el phone ya esta en uso");
+      throw new DuplicatedNameException("El username ya esta en uso");
     }
 
     User user = UserMapper.toUserEntity(userDto);
@@ -66,31 +62,25 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDto updateUser(Long id, SaveUser userDto) {
+  public UserDto updateUser(Long id, UpdateUser userDto) {
     User userExists = userRepository.findById(id)
-        .orElseThrow(() -> new NotFoundElementException("El usuario requerido no existe"));
-
-    boolean usernameExists = userRepository.existsByUsername(userDto.getUsername());
-    boolean emailExists = userRepository.existsByEmail(userDto.getEmail());
-    boolean phoneExists = userRepository.existsByPhone(userDto.getPhone());
+        .orElseThrow(() -> new NotFoundElementException("El id no pertenece a ningun usuario"));
+    boolean usernameExists = userRepository.existsUserByUsername(userDto.getUsername());
 
     if (usernameExists && !Objects.equals(userExists.getUsername(), userDto.getUsername())) {
-      throw new DuplicatedNameException("el username ya esta en uso");
-    } else if (emailExists && !Objects.equals(userExists.getEmail(), userDto.getEmail())) {
-      throw new DuplicatedNameException("el email ya esta en uso");
-    } else if (phoneExists && !Objects.equals(userExists.getPhone(), userDto.getPhone())) {
-      throw new DuplicatedNameException("el phone ya esta en uso");
+      throw new DuplicatedNameException("El username ya esta en uso");
     }
 
     UserMapper.updateEntityUser(userExists, userDto);
     User userUpdated = userRepository.save(userExists);
+
     return UserMapper.toUserDto(userUpdated);
   }
 
   @Override
   public void deleteUser(Long id) {
     User userExists = userRepository.findById(id)
-        .orElseThrow(() -> new NotFoundElementException("El usuario requerido no existe"));
+        .orElseThrow(() -> new NotFoundElementException("El id no pertenece a ningun usuario"));
 
     userRepository.delete(userExists);
   }

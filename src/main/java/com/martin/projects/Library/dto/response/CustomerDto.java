@@ -2,7 +2,6 @@ package com.martin.projects.Library.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.martin.projects.Library.util.UserRole;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,18 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class CustomerDto {
 
   private Long id;
-
-  @JsonProperty(value = "full_name")
+  @JsonProperty("full_name")
   private String fullName;
-
-  private String username;
-  private String password;
-
-  private UserRole role;
-
+  private String phone;
+  private String email;
   @JsonProperty("created_At")
   @JsonFormat(timezone = "yyyy-MM-dd")
   private LocalDateTime createdAt;

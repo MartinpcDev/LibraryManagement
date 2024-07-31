@@ -1,8 +1,10 @@
 package com.martin.projects.Library.controller;
 
 import com.martin.projects.Library.dto.request.SaveUser;
+import com.martin.projects.Library.dto.request.UpdateUser;
 import com.martin.projects.Library.dto.response.UserDto;
 import com.martin.projects.Library.service.UserService;
+import com.martin.projects.Library.util.UserRole;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +35,11 @@ public class UserController {
   }
 
   @GetMapping
-  public ResponseEntity<List<UserDto>> findAll(@RequestParam(required = false) String name) {
-
+  public ResponseEntity<List<UserDto>> findAll(@RequestParam(required = false) String role) {
     List<UserDto> userDtoList;
 
-    if (StringUtils.hasText(name)) {
-      userDtoList = userService.findAllUsersByName(name);
+    if (StringUtils.hasText(role)) {
+      userDtoList = userService.findAllByRole(UserRole.valueOf(role.toUpperCase()));
     } else {
       userDtoList = userService.findAllUsers();
     }
@@ -59,7 +60,7 @@ public class UserController {
 
   @PutMapping("/{id}")
   public ResponseEntity<UserDto> update(@PathVariable("id") Long id,
-      @RequestBody @Valid SaveUser userDto) {
+      @RequestBody @Valid UpdateUser userDto) {
     UserDto userUpdated = userService.updateUser(id, userDto);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(userUpdated);
   }
@@ -68,7 +69,7 @@ public class UserController {
   public ResponseEntity<Map<String, String>> delete(@PathVariable("id") Long id) {
     userService.deleteUser(id);
     Map<String, String> response = new HashMap<>();
-    response.put("message", "User Eliminado Correctamente");
+    response.put("message", "User eliminado Correctamente");
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
   }
 }

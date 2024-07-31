@@ -1,8 +1,10 @@
 package com.martin.projects.Library.mapper;
 
 import com.martin.projects.Library.dto.request.SaveUser;
+import com.martin.projects.Library.dto.request.UpdateUser;
 import com.martin.projects.Library.dto.response.UserDto;
 import com.martin.projects.Library.persistence.entity.User;
+import com.martin.projects.Library.util.UserRole;
 import java.util.List;
 
 public class UserMapper {
@@ -16,8 +18,8 @@ public class UserMapper {
         user.getId(),
         user.getFullName(),
         user.getUsername(),
-        user.getPhone(),
-        user.getEmail(),
+        user.getPassword(),
+        user.getRole(),
         user.getCreatedAt()
     );
   }
@@ -41,13 +43,11 @@ public class UserMapper {
     user.setFullName(userDto.getFullName());
     user.setUsername(userDto.getUsername());
     user.setPassword(userDto.getPassword());
-    user.setPhone(userDto.getPhone());
-    user.setEmail(userDto.getEmail());
 
     return user;
   }
 
-  public static void updateEntityUser(User oldUser, SaveUser userDto) {
+  public static void updateEntityUser(User oldUser, UpdateUser userDto) {
     if (oldUser == null || userDto == null) {
       return;
     }
@@ -55,7 +55,6 @@ public class UserMapper {
     oldUser.setFullName(userDto.getFullName());
     oldUser.setUsername(userDto.getUsername());
     oldUser.setPassword(userDto.getPassword());
-    oldUser.setPhone(userDto.getPhone());
-    oldUser.setEmail(userDto.getEmail());
+    oldUser.setRole(UserRole.valueOf(userDto.getRole().toUpperCase()));
   }
 }

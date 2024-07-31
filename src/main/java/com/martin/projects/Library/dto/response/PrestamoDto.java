@@ -28,5 +28,5 @@ public class PrestamoDto {
   private Date endDate;
 
   private BookDto book;
-  private UserDto user;
+  private CustomerDto customer;
 }

@@ -1,16 +1,13 @@
 package com.martin.projects.Library.persistence.repository;
 
 import com.martin.projects.Library.persistence.entity.User;
+import com.martin.projects.Library.util.UserRole;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-  List<User> findAllByFullNameContainingIgnoreCase(String fullName);
+  List<User> findAllByRole(UserRole role);
 
-  boolean existsByEmail(String email);
-
-  boolean existsByPhone(String phone);
-
-  boolean existsByUsername(String username);
+  boolean existsUserByUsername(String username);
 }

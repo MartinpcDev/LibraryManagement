@@ -14,7 +14,7 @@ public interface PrestamoService {
 
   List<PrestamoDto> findAllByBook(Long bookId);
 
-  List<PrestamoDto> findAllByUser(Long userId);
+  List<PrestamoDto> findAllByCustomer(Long userId);
 
   PrestamoDto findPrestamoById(Long id);
 

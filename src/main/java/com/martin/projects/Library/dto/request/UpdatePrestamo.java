@@ -25,21 +25,23 @@ public class UpdatePrestamo {
   @NotNull(message = "El campo book_id es obligatorio")
   private Long bookId;
 
-  @JsonProperty(value = "user_id")
-  @NotNull(message = "El campo user_id es obligatorio")
-  private Long userId;
+  @JsonProperty(value = "customer_id")
+  @NotNull(message = "El campo customer_id es obligatorio")
+  private Long customerId;
 
   @NotBlank(message = "El campo status es obligatorio")
   @ValidStatus(message = "El campo status deber ser EN_PRESTAMO o DISPONIBLE")
   private String status;
 
   @NotNull(message = "El campo start_date es obligatorio")
-  @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "El campo birthdate debe estar en el formato yyyy-MM-dd")
+  @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "El campo "
+      + "start_date debe estar en el formato yyyy-MM-dd")
   @JsonProperty(value = "start_date")
   private String startDateString;
 
   @NotNull(message = "El campo end_date es obligatorio")
-  @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "El campo birthdate debe estar en el formato yyyy-MM-dd")
+  @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "El campo "
+      + "end_date debe estar en el formato yyyy-MM-dd")
   @JsonProperty(value = "end_date")
   private String endDateString;
 

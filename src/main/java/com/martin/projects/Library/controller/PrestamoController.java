@@ -55,9 +55,10 @@ public class PrestamoController {
     return ResponseEntity.ok(prestamoService.findAllByBook(bookId));
   }
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<List<PrestamoDto>> findAllByUser(@PathVariable("userId") Long userId) {
-    return ResponseEntity.ok(prestamoService.findAllByUser(userId));
+  @GetMapping("/customer/{customerId}")
+  public ResponseEntity<List<PrestamoDto>> findAllByUser(
+      @PathVariable("customerId") Long customerId) {
+    return ResponseEntity.ok(prestamoService.findAllByCustomer(customerId));
   }
 
   @GetMapping("/{id}")

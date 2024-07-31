@@ -9,7 +9,7 @@ public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
 
   List<Prestamo> findAllByBookId(Long id);
 
-  List<Prestamo> findAllByUserId(Long id);
+  List<Prestamo> findAllByCustomerId(Long id);
 
   List<Prestamo> findAllByStatus(PrestamoStatus status);
 }

@@ -6,11 +6,11 @@ import com.martin.projects.Library.dto.response.PrestamoDto;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.mapper.PrestamoMapper;
 import com.martin.projects.Library.persistence.entity.Book;
+import com.martin.projects.Library.persistence.entity.Customer;
 import com.martin.projects.Library.persistence.entity.Prestamo;
-import com.martin.projects.Library.persistence.entity.User;
 import com.martin.projects.Library.persistence.repository.BookRepository;
+import com.martin.projects.Library.persistence.repository.CustomerRepository;
 import com.martin.projects.Library.persistence.repository.PrestamoRepository;
-import com.martin.projects.Library.persistence.repository.UserRepository;
 import com.martin.projects.Library.service.PrestamoService;
 import com.martin.projects.Library.util.PrestamoStatus;
 import java.util.List;
@@ -23,14 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class PrestamoServiceImpl implements PrestamoService {
 
   private final PrestamoRepository prestamoRepository;
-  private final UserRepository userRepository;
+  private final CustomerRepository customerRepository;
   private final BookRepository bookRepository;
 
   @Autowired
-  public PrestamoServiceImpl(PrestamoRepository prestamoRepository, UserRepository userRepository,
+  public PrestamoServiceImpl(PrestamoRepository prestamoRepository,
+      CustomerRepository customerRepository,
       BookRepository bookRepository) {
     this.prestamoRepository = prestamoRepository;
-    this.userRepository = userRepository;
+    this.customerRepository = customerRepository;
     this.bookRepository = bookRepository;
   }
 
@@ -54,8 +55,8 @@ public class PrestamoServiceImpl implements PrestamoService {
 
   @Transactional(readOnly = true)
   @Override
-  public List<PrestamoDto> findAllByUser(Long userId) {
-    return PrestamoMapper.toPrestamoDtoList(prestamoRepository.findAllByUserId(userId));
+  public List<PrestamoDto> findAllByCustomer(Long customerId) {
+    return PrestamoMapper.toPrestamoDtoList(prestamoRepository.findAllByCustomerId(customerId));
   }
 
   @Transactional(readOnly = true)
@@ -68,14 +69,14 @@ public class PrestamoServiceImpl implements PrestamoService {
 
   @Override
   public PrestamoDto createPrestamo(SavePrestamo prestamoDto) {
-    User userExists = userRepository.findById(prestamoDto.getUserId())
+    Customer customerExists = customerRepository.findById(prestamoDto.getCustomerId())
         .orElseThrow(
-            () -> new NotFoundElementException("El user_id no pertenece a ningun usuario"));
+            () -> new NotFoundElementException("El customer_id no pertenece a ningun cliente"));
     Book bookExists = bookRepository.findById(prestamoDto.getBookId())
         .orElseThrow(
-            () -> new NotFoundElementException("El user_id no pertenece a ningun usuario"));
+            () -> new NotFoundElementException("El book_id no pertenece a ningun Book"));
     Prestamo prestamoToCreated = PrestamoMapper.toSavePrestamoEntity(prestamoDto, bookExists,
-        userExists);
+        customerExists);
     return PrestamoMapper.toPrestamoDto(prestamoRepository.save(prestamoToCreated));
   }
 
@@ -83,14 +84,14 @@ public class PrestamoServiceImpl implements PrestamoService {
   public PrestamoDto updatePrestamo(Long id, UpdatePrestamo prestamoDto) {
     Prestamo prestamoExists = prestamoRepository.findById(id)
         .orElseThrow(() -> new NotFoundElementException("El id no pertenece a ningun prestamo"));
-    User userExists = userRepository.findById(prestamoDto.getUserId())
+    Customer customerExists = customerRepository.findById(prestamoDto.getCustomerId())
         .orElseThrow(
-            () -> new NotFoundElementException("El user_id no pertenece a ningun usuario"));
+            () -> new NotFoundElementException("El customer_id no pertenece a ningun cliente"));
     Book bookExists = bookRepository.findById(prestamoDto.getBookId())
         .orElseThrow(
-            () -> new NotFoundElementException("El user_id no pertenece a ningun usuario"));
+            () -> new NotFoundElementException("El book_id no pertenece a ningun book"));
     PrestamoMapper.updatePrestamoEntity(prestamoExists, prestamoDto,
-        bookExists, userExists);
+        bookExists, customerExists);
     Prestamo prestamoUpdated = prestamoRepository.save(prestamoExists);
     return PrestamoMapper.toPrestamoDto(prestamoUpdated);
   }

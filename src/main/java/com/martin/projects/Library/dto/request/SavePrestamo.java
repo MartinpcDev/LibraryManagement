@@ -23,9 +23,9 @@ public class SavePrestamo {
   @NotNull(message = "El campo book_id es obligatorio")
   private Long bookId;
 
-  @JsonProperty(value = "user_id")
+  @JsonProperty(value = "customer_id")
   @NotNull(message = "El campo user_id es obligatorio")
-  private Long userId;
+  private Long customerId;
 
   @NotNull(message = "El campo start_date es obligatorio")
   @Pattern(regexp = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$", message = "El campo birthdate debe estar en el formato yyyy-MM-dd")

@@ -1,4 +1,4 @@
-package com.martin.projects.Library.config;
+package com.martin.projects.Library.config.security;
 
 import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.persistence.repository.UserRepository;

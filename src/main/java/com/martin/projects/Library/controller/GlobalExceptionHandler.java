@@ -7,9 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import javax.naming.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -175,6 +178,60 @@ public class GlobalExceptionHandler {
         "Request Invalido: el valor proporcionado " + valueRejected
             + " no tiene el type esperado " + "para el " + propertyName,
         methodArgumentTypeMismatchException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  public ResponseEntity<ApiErrorResponse> handleAuthenticationException(
+      AuthenticationException authenticationException,
+      HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.UNAUTHORIZED.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "Acceso no Autorizado",
+        authenticationException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<ApiErrorResponse> handleBadCredentialsException(
+      BadCredentialsException badCredentialsException,
+      HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.UNAUTHORIZED.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "Credenciales invalidas",
+        badCredentialsException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  public ResponseEntity<ApiErrorResponse> handleAuthorizationDeniedException(
+      AuthorizationDeniedException authorizationDeniedException,
+      HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.UNAUTHORIZED.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "Acceso denegado",
+        authorizationDeniedException.getMessage(),
         timestamp,
         null
     );

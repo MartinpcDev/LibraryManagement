@@ -3,7 +3,7 @@ package com.martin.projects.Library.config.security.filter;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.persistence.entity.User;
 import com.martin.projects.Library.persistence.repository.UserRepository;
-import com.martin.projects.Library.service.impl.JwtService;
+import com.martin.projects.Library.service.impl.JwtServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,12 +18,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtService jwtService;
+  private final JwtServiceImpl jwtServiceImpl;
   private final UserRepository userRepository;
 
   @Autowired
-  public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
-    this.jwtService = jwtService;
+  public JwtAuthenticationFilter(JwtServiceImpl jwtServiceImpl, UserRepository userRepository) {
+    this.jwtServiceImpl = jwtServiceImpl;
     this.userRepository = userRepository;
   }
 
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     String jwt = authHeader.split(" ")[1];
-    String username = jwtService.extractUsername(jwt);
+    String username = jwtServiceImpl.extractUsername(jwt);
 
     User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new NotFoundElementException("Usuario con el username no esiste"));

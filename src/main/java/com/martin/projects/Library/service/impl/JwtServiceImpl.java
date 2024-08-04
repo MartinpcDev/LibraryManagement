@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl {
 
   @Value("${security.jwt.expiration-minutes}")
   private long EXPIRATION_MINUTES;

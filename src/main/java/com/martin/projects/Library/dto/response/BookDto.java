@@ -16,6 +16,7 @@ public class BookDto {
   private Long id;
   private String title;
   private String isbn;
+  private String url;
 
   @JsonProperty(value = "release_year")
   private Integer publicationYear;

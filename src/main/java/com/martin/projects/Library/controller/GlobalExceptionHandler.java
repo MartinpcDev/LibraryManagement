@@ -2,6 +2,7 @@ package com.martin.projects.Library.controller;
 
 import com.martin.projects.Library.dto.response.ApiErrorResponse;
 import com.martin.projects.Library.exception.DuplicatedNameException;
+import com.martin.projects.Library.exception.ImageNotFoundException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -232,6 +233,24 @@ public class GlobalExceptionHandler {
         request.getMethod(),
         "Acceso denegado",
         authorizationDeniedException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(ImageNotFoundException.class)
+  public ResponseEntity<ApiErrorResponse> handleImageNotFoundException(
+      ImageNotFoundException imageNotFoundException,
+      HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.BAD_REQUEST.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "Imagen no proporcionada",
+        imageNotFoundException.getMessage(),
         timestamp,
         null
     );

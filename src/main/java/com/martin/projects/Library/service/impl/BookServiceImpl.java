@@ -1,7 +1,9 @@
 package com.martin.projects.Library.service.impl;
 
 import com.martin.projects.Library.dto.request.SaveBook;
+import com.martin.projects.Library.dto.request.UploadImage;
 import com.martin.projects.Library.dto.response.BookDto;
+import com.martin.projects.Library.exception.ImageNotFoundException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.mapper.BookMapper;
 import com.martin.projects.Library.persistence.entity.Author;
@@ -11,6 +13,7 @@ import com.martin.projects.Library.persistence.repository.AuthorRepository;
 import com.martin.projects.Library.persistence.repository.BookRepository;
 import com.martin.projects.Library.persistence.repository.EditorialRepository;
 import com.martin.projects.Library.service.BookService;
+import com.martin.projects.Library.service.CloudinaryService;
 import com.martin.projects.Library.util.BookGender;
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +31,15 @@ public class BookServiceImpl implements BookService {
 
   private final EditorialRepository editorialRepository;
 
+  private final CloudinaryService cloudinaryService;
+
   @Autowired
   public BookServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository,
-      EditorialRepository editorialRepository) {
+      EditorialRepository editorialRepository, CloudinaryService cloudinaryService) {
     this.bookRepository = bookRepository;
     this.authorRepository = authorRepository;
     this.editorialRepository = editorialRepository;
+    this.cloudinaryService = cloudinaryService;
   }
 
   @Transactional(readOnly = true)
@@ -96,6 +102,25 @@ public class BookServiceImpl implements BookService {
     Book book = BookMapper.toBookEntity(bookDto, authorExists, editorialExists);
     Book bookCreated = bookRepository.save(book);
     return BookMapper.toBookDto(bookCreated);
+  }
+
+  @Override
+  public BookDto uploadBookImage(Long id, UploadImage imageDto) {
+    Book book = bookRepository.findById(id)
+        .orElseThrow(() -> new NotFoundElementException("El id no pertenece a ningun libro"));
+
+    if (imageDto.getFile().isEmpty()) {
+      throw new ImageNotFoundException("Se debe proporcionar una imagen");
+    }
+
+    book.setUrl(cloudinaryService.uploadFile(imageDto.getFile()));
+    if (book.getUrl() == null) {
+      throw new ImageNotFoundException("Se debe proporcionar una imagen");
+    }
+
+    bookRepository.save(book);
+
+    return BookMapper.toBookDto(book);
   }
 
   @Override

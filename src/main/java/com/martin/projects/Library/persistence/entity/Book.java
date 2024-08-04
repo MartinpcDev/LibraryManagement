@@ -32,6 +32,8 @@ public class Book {
   @Column(nullable = false, unique = true)
   private String isbn;
 
+  private String url;
+
   @Column(nullable = false)
   private Integer publicationYear;
 

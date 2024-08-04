@@ -20,21 +20,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationServiceImpl {
 
 
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final JwtService jwtService;
+  private final JwtServiceImpl jwtServiceImpl;
 
   @Autowired
-  public AuthenticationService(AuthenticationManager authenticationManager,
-      UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+  public AuthenticationServiceImpl(AuthenticationManager authenticationManager,
+      UserRepository userRepository, PasswordEncoder passwordEncoder,
+      JwtServiceImpl jwtServiceImpl) {
     this.authenticationManager = authenticationManager;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
-    this.jwtService = jwtService;
+    this.jwtServiceImpl = jwtServiceImpl;
   }
 
   public AuthenticationResponse login(AuthenticationRequest authRequest) {
@@ -48,7 +49,7 @@ public class AuthenticationService {
         .orElseThrow(() -> new NotFoundElementException("El username no pertenece a ningun "
             + "usuario"));
 
-    String jwt = jwtService.generateToken(user, generateExtraClaims(user));
+    String jwt = jwtServiceImpl.generateToken(user, generateExtraClaims(user));
 
     return new AuthenticationResponse(jwt);
   }
@@ -78,7 +79,7 @@ public class AuthenticationService {
 
     String encodePassword = passwordEncoder.encode(userDto.getPassword());
     userDto.setPassword(encodePassword);
-    
+
     UserMapper.updateEntityUser(userExists, userDto);
 
     return UserMapper.toUserDto(userRepository.save(userExists));

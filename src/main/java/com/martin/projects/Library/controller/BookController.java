@@ -1,6 +1,7 @@
 package com.martin.projects.Library.controller;
 
 import com.martin.projects.Library.dto.request.SaveBook;
+import com.martin.projects.Library.dto.request.UploadImage;
 import com.martin.projects.Library.dto.response.BookDto;
 import com.martin.projects.Library.service.BookService;
 import com.martin.projects.Library.util.BookGender;
@@ -78,6 +79,13 @@ public class BookController {
       @RequestBody @Valid SaveBook bookDto) {
     BookDto updatedBook = bookService.updateBookById(id, bookDto);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedBook);
+  }
+
+  @PutMapping(value = "/upload/{id}", consumes = "multipart/form-data")
+  public ResponseEntity<BookDto> uploadImage(@PathVariable("id") Long id, @Valid
+  UploadImage imageDto) {
+    BookDto uploadBookImage = bookService.uploadBookImage(id, imageDto);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(uploadBookImage);
   }
 
   @DeleteMapping("/{id}")

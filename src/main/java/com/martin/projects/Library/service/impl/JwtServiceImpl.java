@@ -53,4 +53,8 @@ public class JwtServiceImpl {
         .parseClaimsJws(jwt)
         .getBody();
   }
+
+  public void validateToken(String token) {
+    extraAllClaims(token);
+  }
 }

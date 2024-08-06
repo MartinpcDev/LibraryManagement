@@ -1,9 +1,11 @@
 package com.martin.projects.Library.config.security.filter;
 
+import com.martin.projects.Library.exception.JwtExpiredException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.persistence.entity.User;
 import com.martin.projects.Library.persistence.repository.UserRepository;
 import com.martin.projects.Library.service.impl.JwtServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,14 +43,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String jwt = authHeader.split(" ")[1];
     String username = jwtServiceImpl.extractUsername(jwt);
 
-    User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new NotFoundElementException("Usuario con el username no esiste"));
+    try {
 
-    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-        username, null, user.getAuthorities()
-    );
+      jwtServiceImpl.validateToken(jwt);
 
-    SecurityContextHolder.getContext().setAuthentication(authToken);
+      User user = userRepository.findByUsername(username)
+          .orElseThrow(() -> new NotFoundElementException("Usuario con el username no esiste"));
+
+      UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+          username, null, user.getAuthorities()
+      );
+
+      SecurityContextHolder.getContext().setAuthentication(authToken);
+    } catch (ExpiredJwtException exception) {
+      throw new JwtExpiredException("el jwt esta expirado", exception);
+    } catch (Exception e) {
+      throw new RuntimeException("JWT invalido", e);
+    }
+
     filterChain.doFilter(request, response);
   }
 }

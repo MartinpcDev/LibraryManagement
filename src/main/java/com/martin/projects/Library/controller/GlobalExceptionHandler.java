@@ -3,6 +3,7 @@ package com.martin.projects.Library.controller;
 import com.martin.projects.Library.dto.response.ApiErrorResponse;
 import com.martin.projects.Library.exception.DuplicatedNameException;
 import com.martin.projects.Library.exception.ImageNotFoundException;
+import com.martin.projects.Library.exception.JwtExpiredException;
 import com.martin.projects.Library.exception.NotFoundElementException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -240,6 +243,23 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(httpStatus).body(apiErrorResponse);
   }
 
+  @ExceptionHandler(JwtExpiredException.class)
+  public ResponseEntity<ApiErrorResponse> handleJwtExpiredException(
+      JwtExpiredException jwtExpiredException, HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.UNAUTHORIZED.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "JWT expirado",
+        jwtExpiredException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
   @ExceptionHandler(ImageNotFoundException.class)
   public ResponseEntity<ApiErrorResponse> handleImageNotFoundException(
       ImageNotFoundException imageNotFoundException,
@@ -251,6 +271,40 @@ public class GlobalExceptionHandler {
         request.getMethod(),
         "Imagen no proporcionada",
         imageNotFoundException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(MaxUploadSizeExceededException.class)
+  public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceededException(
+      MaxUploadSizeExceededException maxUploadSizeExceededException, HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.PAYLOAD_TOO_LARGE.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "El tamaño del archivo de imagen sobrepasa el permitido",
+        maxUploadSizeExceededException.getMessage(),
+        timestamp,
+        null
+    );
+
+    return ResponseEntity.status(httpStatus).body(apiErrorResponse);
+  }
+
+  @ExceptionHandler(MultipartException.class)
+  public ResponseEntity<ApiErrorResponse> handleMultipartException(
+      MultipartException multipartException, HttpServletRequest request) {
+
+    int httpStatus = HttpStatus.BAD_REQUEST.value();
+    ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+        httpStatus,
+        request.getMethod(),
+        "Error al subir la imagen",
+        multipartException.getMessage(),
         timestamp,
         null
     );

@@ -4,5 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface CloudinaryService {
 
-  String uploadFile(MultipartFile file);
+  String uploadFile(MultipartFile image);
+
+  boolean isExtensionAllowed(String originalFileName);
 }

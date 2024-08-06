@@ -114,6 +114,7 @@ public class BookServiceImpl implements BookService {
     }
 
     book.setUrl(cloudinaryService.uploadFile(imageDto.getFile()));
+
     if (book.getUrl() == null) {
       throw new ImageNotFoundException("Se debe proporcionar una imagen");
     }

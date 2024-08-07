@@ -5,12 +5,14 @@ import com.martin.projects.Library.exception.NotFoundElementException;
 import com.martin.projects.Library.persistence.entity.User;
 import com.martin.projects.Library.persistence.repository.UserRepository;
 import com.martin.projects.Library.service.impl.JwtServiceImpl;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtServiceImpl jwtServiceImpl;
   private final UserRepository userRepository;
 
+  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
   @Autowired
   public JwtAuthenticationFilter(JwtServiceImpl jwtServiceImpl, UserRepository userRepository) {
     this.jwtServiceImpl = jwtServiceImpl;
@@ -31,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-      FilterChain filterChain) throws ServletException, IOException {
+      FilterChain filterChain) throws ServletException, IOException, JwtExpiredException {
 
     String authHeader = request.getHeader("Authorization");
 
@@ -41,11 +45,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     String jwt = authHeader.split(" ")[1];
-    String username = jwtServiceImpl.extractUsername(jwt);
 
     try {
 
       jwtServiceImpl.validateToken(jwt);
+
+      String username = jwtServiceImpl.extractUsername(jwt);
 
       User user = userRepository.findByUsername(username)
           .orElseThrow(() -> new NotFoundElementException("Usuario con el username no esiste"));
@@ -55,10 +60,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       );
 
       SecurityContextHolder.getContext().setAuthentication(authToken);
-    } catch (ExpiredJwtException exception) {
-      throw new JwtExpiredException("el jwt esta expirado", exception);
-    } catch (Exception e) {
-      throw new RuntimeException("JWT invalido", e);
+    } catch (JwtExpiredException | JwtException e) {
+      logger.error(e.getMessage());
     }
 
     filterChain.doFilter(request, response);

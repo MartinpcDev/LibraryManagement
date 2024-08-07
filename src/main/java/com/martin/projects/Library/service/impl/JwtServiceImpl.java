@@ -1,7 +1,9 @@
 package com.martin.projects.Library.service.impl;
 
+import com.martin.projects.Library.exception.JwtExpiredException;
 import com.martin.projects.Library.persistence.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -54,7 +56,14 @@ public class JwtServiceImpl {
         .getBody();
   }
 
-  public void validateToken(String token) {
-    extraAllClaims(token);
+  public void validateToken(String jwt) {
+    try {
+      Jwts.parserBuilder()
+          .setSigningKey(generateKey())
+          .build()
+          .parseClaimsJws(jwt);
+    } catch (ExpiredJwtException e) {
+      throw new JwtExpiredException("El JWT esta expirado");
+    }
   }
 }
